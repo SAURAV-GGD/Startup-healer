@@ -8,9 +8,11 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // Enable CORS
+  // Enable CORS dynamically for Vercel/Railway
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      callback(null, origin || true);
+    },
     credentials: true,
   });
 
