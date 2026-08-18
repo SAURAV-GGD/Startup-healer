@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Box, Flex, Icon, Text, VStack, Divider } from '@chakra-ui/react'
+import { Box, Flex, Icon, Text, VStack, Divider, Image } from '@chakra-ui/react'
 import {
   FiHome, FiUsers, FiBriefcase, FiCheckSquare, FiTarget,
   FiClock, FiFileText, FiCalendar, FiLogOut, FiClipboard,
@@ -64,26 +64,8 @@ export default function Sidebar() {
       zIndex={10}
     >
       {/* Logo */}
-      <Flex px={6} mb={8} align="center" gap={3}>
-        <Box
-          w="36px"
-          h="36px"
-          borderRadius="10px"
-          bg="linear-gradient(135deg, #5FAF46 0%, #2E9E8E 50%, #1CA3D6 100%)"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Text fontSize="lg" fontWeight="bold" color="white">S</Text>
-        </Box>
-        <Box>
-          <Text fontSize="md" fontWeight="700" color="navy.500" lineHeight="1.2">
-            Startup
-          </Text>
-          <Text fontSize="xs" fontWeight="600" color="teal.500" lineHeight="1">
-            Healer
-          </Text>
-        </Box>
+      <Flex px={6} mb={8} align="center" justify="center">
+        <Image src="/logo.png" alt="Startup Healer" h="60px" objectFit="contain" />
       </Flex>
 
       {/* Nav Items */}

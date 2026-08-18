@@ -2,7 +2,7 @@ import { useState } from 'react'
 import {
   Box, Button, Flex, FormControl, FormLabel, Heading, Input,
   Text, VStack, useToast, Icon, InputGroup, InputLeftElement,
-  Tab, TabList, Tabs, FormErrorMessage,
+  Tab, TabList, Tabs, FormErrorMessage, Image,
 } from '@chakra-ui/react'
 import { FiMail, FiLock, FiShield, FiUsers, FiBriefcase } from 'react-icons/fi'
 import { useAuth } from '@/contexts/AuthContext'
@@ -68,17 +68,7 @@ export default function LoginPage() {
       >
         <Box position="relative" zIndex={1} textAlign="center">
           <Flex align="center" justify="center" gap={4} mb={8}>
-            <Box
-              w="56px" h="56px" borderRadius="16px"
-              bg="rgba(255,255,255,0.2)" backdropFilter="blur(10px)"
-              display="flex" alignItems="center" justifyContent="center"
-            >
-              <Text fontSize="2xl" fontWeight="bold" color="white">S</Text>
-            </Box>
-            <Box textAlign="left">
-              <Text fontSize="2xl" fontWeight="800" color="white" lineHeight="1.2">Startup</Text>
-              <Text fontSize="lg" fontWeight="600" color="whiteAlpha.900" lineHeight="1">Healer</Text>
-            </Box>
+            <Image src="/logo.png" alt="Startup Healer" h="80px" objectFit="contain" />
           </Flex>
           <Heading size="lg" color="white" mb={4} fontWeight="700">
             Client Management Portal
