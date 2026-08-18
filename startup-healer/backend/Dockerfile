@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install --production=false
 
 # Copy source code
 COPY . .
@@ -17,5 +17,5 @@ RUN npm run build
 # Expose port
 EXPOSE 3001
 
-# Development command
-CMD ["npm", "run", "start:dev"]
+# Production command
+CMD ["npm", "run", "start:prod"]
