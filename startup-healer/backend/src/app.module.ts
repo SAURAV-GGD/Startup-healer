@@ -16,7 +16,8 @@ import { AttendanceModule } from './attendance/attendance.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env',
+      envFilePath: ['.env', '../.env'],
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
     SupabaseModule,
     AuthModule,
