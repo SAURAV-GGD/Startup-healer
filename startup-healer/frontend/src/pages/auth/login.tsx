@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import {
   Box, Button, Flex, FormControl, FormLabel, Heading, Input,
-  Text, VStack, useToast, Icon, InputGroup, InputLeftElement,
-  Tab, TabList, Tabs, FormErrorMessage, Image,
+  Text, VStack, useToast, Icon, InputGroup, InputLeftElement, InputRightElement,
+  Tab, TabList, Tabs, FormErrorMessage, Image, IconButton,
 } from '@chakra-ui/react'
-import { FiMail, FiLock, FiShield, FiUsers, FiBriefcase } from 'react-icons/fi'
+import { FiMail, FiLock, FiShield, FiUsers, FiBriefcase, FiEye, FiEyeOff } from 'react-icons/fi'
 import { useAuth } from '@/contexts/AuthContext'
 
 const portals = [
@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const [showPassword, setShowPassword] = useState(false)
   const toast = useToast()
   const { login } = useAuth()
 
@@ -157,7 +158,7 @@ export default function LoginPage() {
                     <Icon as={FiLock} color="gray.400" />
                   </InputLeftElement>
                   <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -168,6 +169,17 @@ export default function LoginPage() {
                     size="lg"
                     fontSize="sm"
                   />
+                  <InputRightElement h="full">
+                    <IconButton
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      icon={<Icon as={showPassword ? FiEyeOff : FiEye} />}
+                      variant="ghost"
+                      size="sm"
+                      color="gray.400"
+                      _hover={{ color: 'gray.600' }}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  </InputRightElement>
                 </InputGroup>
                 <FormErrorMessage>{errors.password}</FormErrorMessage>
               </FormControl>
