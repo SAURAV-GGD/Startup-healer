@@ -9,22 +9,15 @@ class ApiClient {
     this.client = axios.create({
       baseURL: `${API_URL}/api`,
       headers: { 'Content-Type': 'application/json' },
-    })
-
-    this.client.interceptors.request.use((config) => {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-      }
-      return config
+      withCredentials: true,
     })
 
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response?.status === 401 && typeof window !== 'undefined') {
-          localStorage.removeItem('access_token')
-          localStorage.removeItem('user')
+          localStorage.removeItem('access_token:v1')
+          localStorage.removeItem('user:v1')
           window.location.href = '/auth/login'
         }
         return Promise.reject(error)
@@ -36,6 +29,14 @@ class ApiClient {
   async login(email: string, password: string, portal: string) {
     const response = await this.client.post(`/auth/${portal}/login`, { email, password })
     return response.data
+  }
+
+  async logout() {
+    try {
+      await this.client.post('/auth/logout')
+    } catch (err) {
+      console.error('Logout failed on backend', err)
+    }
   }
 
   // Clients

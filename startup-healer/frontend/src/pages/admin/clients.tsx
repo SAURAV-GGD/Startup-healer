@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Box, Heading, Text, Flex, Button, Input, Select, Table, Thead, Tbody, Tr, Th, Td,
   useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter,
@@ -23,27 +23,38 @@ export default function AdminClients() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const toast = useToast()
 
-  const fetchClients = async () => {
+  const fetchClients = useCallback(async (options?: { ignore?: boolean }) => {
+    if (options?.ignore) return
     try {
       const data = await apiClient.getClients(search || undefined, filterStatus || undefined)
-      setClients(data)
+      if (!options?.ignore) {
+        setClients(data)
+      }
     } catch (err) {
       console.error('Failed to fetch clients:', err)
     } finally {
-      setLoading(false)
+      if (!options?.ignore) setLoading(false)
     }
-  }
+  }, [search, filterStatus])
 
-  const fetchEmployees = async () => {
+  const fetchEmployees = useCallback(async (options?: { ignore?: boolean }) => {
+    if (options?.ignore) return
     try {
       const data = await apiClient.getEmployees()
-      setEmployees(data)
+      if (!options?.ignore) {
+        setEmployees(data)
+      }
     } catch (err) {
       console.error('Failed to fetch employees:', err)
     }
-  }
+  }, [])
 
-  useEffect(() => { fetchClients(); fetchEmployees() }, [search, filterStatus])
+  useEffect(() => {
+    const options = { ignore: false }
+    fetchClients(options)
+    fetchEmployees(options)
+    return () => { options.ignore = true }
+  }, [fetchClients, fetchEmployees])
 
   const validate = () => {
     const errors: any = {}

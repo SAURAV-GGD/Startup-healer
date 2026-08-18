@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useSyncExternalStore, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { apiClient } from '@/lib/api'
 
@@ -19,29 +19,32 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+const emptySubscribe = () => () => {}
+const getClientSnapshot = () => true
+const getServerSnapshot = () => false
 
-  useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    const savedUser = localStorage.getItem('user')
-    if (token && savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch {
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('user')
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user:v1')
+      if (savedUser) {
+        try {
+          return JSON.parse(savedUser)
+        } catch {
+          localStorage.removeItem('user:v1')
+        }
       }
     }
-    setLoading(false)
-  }, [])
+    return null
+  })
 
-  const login = async (email: string, password: string, portal: string) => {
+  const isMounted = useSyncExternalStore(emptySubscribe, getClientSnapshot, getServerSnapshot)
+  const loading = !isMounted
+  const router = useRouter()
+
+  const login = useCallback(async (email: string, password: string, portal: string) => {
     const data = await apiClient.login(email, password, portal)
-    localStorage.setItem('access_token', data.access_token)
-    localStorage.setItem('user', JSON.stringify(data.user))
+    localStorage.setItem('user:v1', JSON.stringify(data.user))
     setUser(data.user)
 
     // Redirect based on role
@@ -56,17 +59,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push('/client/dashboard')
         break
     }
-  }
+  }, [router])
 
-  const logout = () => {
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('user')
+  const logout = useCallback(async () => {
+    await apiClient.logout()
+    localStorage.removeItem('user:v1')
     setUser(null)
     router.push('/auth/login')
-  }
+  }, [router])
+
+  const value = useMemo(() => ({ user, loading, login, logout }), [user, loading, login, logout])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )

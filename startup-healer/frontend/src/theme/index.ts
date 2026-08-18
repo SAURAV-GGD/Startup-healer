@@ -45,8 +45,8 @@ const theme = extendTheme({
     },
   },
   fonts: {
-    heading: `'Inter', -apple-system, BlinkMacSystemFont, sans-serif`,
-    body: `'Inter', -apple-system, BlinkMacSystemFont, sans-serif`,
+    heading: `var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif`,
+    body: `var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif`,
   },
   styles: {
     global: {

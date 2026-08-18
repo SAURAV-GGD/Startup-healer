@@ -105,7 +105,7 @@ export default function AdminTasks() {
                 <FormLabel fontSize="sm">Assign To</FormLabel>
                 <Select value={formData.employee_id} onChange={(e) => setFormData({ ...formData, employee_id: e.target.value })} borderRadius="10px">
                   <option value="">Select Employee</option>
-                  {employees.filter(e => e.role === 'bda').map(emp => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+                  {employees.flatMap(emp => emp.role === 'bda' ? [<option key={emp.id} value={emp.id}>{emp.name}</option>] : [])}
                 </Select>
               </FormControl>
               <FormControl>

@@ -88,7 +88,7 @@ export default function EmployeeDashboard() {
       <Flex justify="space-between" align="center" mb={6}>
         <Box>
           <Heading size="lg" color="navy.500" mb={1}>Welcome, {user?.name}</Heading>
-          <Text color="gray.500" fontSize="sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Text>
+          <Text suppressHydrationWarning color="gray.500" fontSize="sm">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Text>
         </Box>
         <Flex gap={3}>
           {!attendance?.check_in ? (

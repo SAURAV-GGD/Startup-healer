@@ -1,6 +1,5 @@
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, Button, Heading, Text, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import Sidebar from '@/components/common/Sidebar'
 
@@ -12,20 +11,6 @@ interface LayoutProps {
 export default function Layout({ children, requiredRole }: LayoutProps) {
   const { user, loading } = useAuth()
   const router = useRouter()
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/login')
-    }
-    if (!loading && user && requiredRole && user.role !== requiredRole) {
-      // Redirect to correct portal
-      switch (user.role) {
-        case 'admin': router.push('/admin/dashboard'); break
-        case 'bda': router.push('/employee/dashboard'); break
-        case 'client': router.push('/client/dashboard'); break
-      }
-    }
-  }, [user, loading, requiredRole, router])
 
   if (loading) {
     return (
@@ -41,7 +26,42 @@ export default function Layout({ children, requiredRole }: LayoutProps) {
     )
   }
 
-  if (!user) return null
+  if (!user) {
+    return (
+      <Flex minH="100vh" align="center" justify="center" bg="#F7FAFC">
+        <VStack spacing={4}>
+          <Heading size="md" color="gray.700">Authentication Required</Heading>
+          <Text color="gray.500">You need to be logged in to view this page.</Text>
+          <Button 
+            colorScheme="teal" 
+            onClick={() => router.push('/auth/login')}
+          >
+            Go to Login
+          </Button>
+        </VStack>
+      </Flex>
+    )
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    return (
+      <Flex minH="100vh" align="center" justify="center" bg="#F7FAFC">
+        <VStack spacing={4}>
+          <Heading size="md" color="gray.700">Access Denied</Heading>
+          <Text color="gray.500">You do not have permission to view this page.</Text>
+          <Button 
+            colorScheme="teal" 
+            onClick={() => {
+              const portal = user.role === 'bda' ? 'employee' : user.role
+              router.push(`/${portal}/dashboard`)
+            }}
+          >
+            Go to My Dashboard
+          </Button>
+        </VStack>
+      </Flex>
+    )
+  }
 
   return (
     <Flex minH="100vh" bg="#F7FAFC">
