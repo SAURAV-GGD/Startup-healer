@@ -39,6 +39,19 @@ class ApiClient {
     }
   }
 
+  // Forgot Password
+  async forgotPassword(email: string) {
+    return (await this.client.post('/auth/forgot-password', { email })).data
+  }
+
+  async verifyOtp(email: string, otp: string) {
+    return (await this.client.post('/auth/verify-otp', { email, otp })).data
+  }
+
+  async resetPassword(resetToken: string, newPassword: string) {
+    return (await this.client.post('/auth/reset-password', { resetToken, newPassword })).data
+  }
+
   // Clients
   async getClients(search?: string, status?: string) {
     const params = new URLSearchParams()

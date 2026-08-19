@@ -5,6 +5,7 @@ import {
   Tab, TabList, Tabs, FormErrorMessage, Image, IconButton,
 } from '@chakra-ui/react'
 import { FiMail, FiLock, FiShield, FiUsers, FiBriefcase, FiEye, FiEyeOff } from 'react-icons/fi'
+import { useRouter } from 'next/router'
 import { useAuth } from '@/contexts/AuthContext'
 
 const portals = [
@@ -22,6 +23,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const toast = useToast()
   const { login } = useAuth()
+  const router = useRouter()
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {}
@@ -44,7 +46,11 @@ export default function LoginPage() {
     } catch (err: any) {
       toast({
         title: 'Login failed',
-        description: err.response?.data?.message || 'Invalid credentials',
+        description:
+          err.response?.data?.message ||
+          (err.request
+            ? 'Unable to reach the server. Please try again shortly.'
+            : 'Unable to sign in. Please try again.'),
         status: 'error',
         duration: 3000,
       })
@@ -183,7 +189,18 @@ export default function LoginPage() {
                 </InputGroup>
                 <FormErrorMessage>{errors.password}</FormErrorMessage>
               </FormControl>
-
+              <Button
+                type="button"
+                variant="link"
+                size="sm"
+                color="teal.500"
+                fontWeight="500"
+                alignSelf="flex-end"
+                _hover={{ color: 'teal.700' }}
+                onClick={() => router.push('/auth/forget-password')}
+              >
+                Forgot password?
+              </Button>
               <Button
                 type="submit"
                 w="full"
